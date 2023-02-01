@@ -18,15 +18,18 @@ function source.get_debug_name()
     return "wiki-para"
 end
 
+-- make a array of the trigger characters strings: "[["
 function source.get_trigger_characters()
-    return {"[["}
+    return { "[", "[" }
 end
 
 -- function source.get_keyword_pattern()
 --     return [=[:[[:alnum:]_\-\+]*:\?]=]
 -- end
 
--- This function reads all markdown files in the rootDir and returns a list of filenames stripped of the markdown extension .md
+-- This function reads names of all markdown files in the rootDir
+-- and returns a list of filenames stripped of the markdown extension .md
+-- as a table that could be used as a completion item.
 local function get_vimwiki_para()
     local it = {}
     local used = {}

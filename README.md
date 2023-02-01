@@ -1,37 +1,34 @@
 # cmp-vimwiki-tags
 
-Nvim cmp source for Vimwiki tags. 
+Nvim cmp source for Vimwiki para. 
+
+```
+[[these-kindof-links]]
+```
 
 ## Setup
 
 ```lua
 require'cmp'.setup {
   sources = {
-    { name = 'vimwiki-tags' }
+    { name = 'vimwiki-para' }
   }
 }
 ```
 
 ## Requirements
 
-This is made for personal use, but I thought there might be others who could benefit. It requires opening the Vimwiki directory instead of an individual file. 
+This plugin allows users to insert links from a vault directory that has a bunch of files with `name.md`.
 
-I use this shell script to launch Vimwiki. It opens the Vimwiki directory and then immediately opens either the file with the name of the first argument (which will create that file if it does not exist), or the index file in case of no arguments. If you pass more than one argument it will add them as tags to the top of the file.
+This will allow user to insert links such as [[name]] inside any file.
 
-```bash
-function note_fn() {
-  if [[ "$1" == "" ]]; then
-    cd "$vimwiki_path" && nvim -c "e index.md" .
-  elif [[ "$2" == "" ]]; then
-    cd "$vimwiki_path" && nvim -c "e $1.md" .
-  else
-    tags=":"
-    for tag in "${@:2}"; do
-      tags="$tags$tag:"
-    done
-    cd "$vimwiki_path" && nvim -c "e $1.md | execute 'normal ggO$tags'" .
-  fi
-}
-alias note=note_fn
+Currently the only supported folder is:
+
 ```
-(Put this in .bashrc or .zshrc, and change the index file name and Vimwiki path to ones that fit your config. Notice the script assumes the .md extension.)
+{UserHome}/notes/vault
+```
+
+## To Add
+
+- [ ] Link Navigation
+- [ ] Backlinks [:?]
