@@ -1,20 +1,7 @@
 local source = {}
 
-local function file_exists(file)
-    local res = os.execute("if [ -f " .. file .. " ]; then exit 0; else exit 1; fi")
-    return res == 0
-end
-
-local function lines_from(file)
-    if not file_exists(file) then
-        return {}
-    end
-    local lines = {}
-    for line in io.lines(file) do
-        lines[#lines + 1] = line
-    end
-    return lines
-end
+-- Directory at { user home }/notes/vault
+local rootDir = vim.fn.expand("~/notes/vault")
 
 source.new = function()
     local self = setmetatable({}, {__index = source})
@@ -23,32 +10,32 @@ source.new = function()
 end
 
 function source.is_available()
-    return vim.bo.filetype == "vimwiki"
+  --check if rootDir exists
+  return vim.fn.isdirectory(rootDir) == 1
 end
 
 function source.get_debug_name()
-    return "vimwiki-tags"
+    return "wiki-para"
 end
 
 function source.get_trigger_characters()
-    return {":"}
+    return {"[["}
 end
 
 -- function source.get_keyword_pattern()
 --     return [=[:[[:alnum:]_\-\+]*:\?]=]
 -- end
 
-local function get_vimwiki_tags()
-    local file = ".vimwiki_tags"
-    local lines = lines_from(file)
+-- This function reads all markdown files in the rootDir and returns a list of filenames stripped of the markdown extension .md
+local function get_vimwiki_para()
     local it = {}
     local used = {}
 
-    for _, v in pairs(lines) do
-        local tag = vim.fn.matchstr(v, "^\\S\\+")
-        if (not string.match(tag, "^!_.+") and not used[tag]) then
-            table.insert(it, {label = ":" .. tag .. ":"})
-            used[tag] = true
+    for file in io.popen("find " .. rootDir .. " -type f -name '*.md'"):lines() do
+        local filename = vim.fn.fnamemodify(file, ":t:r")
+        if (not used[filename]) then
+            table.insert(it, {label = "[[" .. filename .. "]]"})
+            used[filename] = true
         end
     end
 
@@ -60,7 +47,7 @@ function source.complete(self, _, callback)
     local items = {}
 
     if not self.cache[bufnr] then
-        items = get_vimwiki_tags()
+        items = get_vimwiki_para()
         if type(items) ~= "table" then
             return callback()
         end
