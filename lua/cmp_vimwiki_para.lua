@@ -23,9 +23,10 @@ function source.get_trigger_characters()
     return { "[", "[" }
 end
 
--- function source.get_keyword_pattern()
---     return [=[:[[:alnum:]_\-\+]*:\?]=]
--- end
+function source.get_keyword_pattern()
+   -- A pattern that accepts any characters inside the [[ ]]
+    return [[\[\[\k*]]
+end
 
 -- This function reads names of all markdown files in the rootDir
 -- and returns a list of filenames stripped of the markdown extension .md
