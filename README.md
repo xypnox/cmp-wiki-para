@@ -1,10 +1,18 @@
 # cmp-vimwiki-tags
 
-Nvim cmp source for Vimwiki para. 
+Neovim cmp source for Vimwiki para. 
 
 ```
 [[these-kindof-links]]
 ```
+
+If `cmp` has been correctly configured, it will show suggestions when:
+
+[ is entered or after [[.
+
+Auto bracket closing plugins do not affect this plugin's functionality.
+
+> I use it with LunarVim
 
 ## Setup
 
