@@ -14,6 +14,8 @@ Auto bracket closing plugins do not affect this plugin's functionality.
 
 > I use it with LunarVim
 
+![demo](demo.gif)
+
 ## Setup
 
 ```lua
