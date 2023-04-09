@@ -4,9 +4,9 @@ local source = {}
 local rootDir = vim.fn.expand("~/notes/vault")
 
 source.new = function()
-    local self = setmetatable({}, {__index = source})
-    self.cache = {}
-    return self
+  local self = setmetatable({}, { __index = source })
+  self.cache = {}
+  return self
 end
 
 function source.is_available()
@@ -15,60 +15,62 @@ function source.is_available()
 end
 
 function source.get_debug_name()
-    return "wiki-para"
+  return "wiki-para"
 end
 
 -- make a array of the trigger characters strings: "[["
 function source.get_trigger_characters()
-    return { "[", "[" }
+  return { "[", "[" }
 end
 
 function source.get_keyword_pattern()
-   -- A pattern that accepts any number of characters and .- inside the [[ ]]
-    return [[\[\[\k*.-\]\]]
+  -- A pattern that accepts alphanumeric and '_', '-', '.' in any order 
+  -- Ex: wiki-para or wiki_para or wiki.para or wiki-para wiki-para.1.3.3
+  -- inside the [[
+  return [[\k\+]]
 end
 
 -- This function reads names of all markdown files in the rootDir
 -- and returns a list of filenames stripped of the markdown extension .md
 -- as a table that could be used as a completion item.
 local function get_vimwiki_para()
-    local it = {}
-    local used = {}
+  local it = {}
+  local used = {}
 
-    for file in io.popen("find " .. rootDir .. " -type f -name '*.md'"):lines() do
-        local filename = vim.fn.fnamemodify(file, ":t:r")
-        if (not used[filename]) then
-            table.insert(it, {label = "[[" .. filename .. "]]"})
-            used[filename] = true
-        end
+  for file in io.popen("find " .. rootDir .. " -type f -name '*.md'"):lines() do
+    local filename = vim.fn.fnamemodify(file, ":t:r")
+    if (not used[filename]) then
+      table.insert(it, { label = "[[" .. filename .. "]]" })
+      used[filename] = true
     end
+  end
 
-    return it
+  return it
 end
 
 function source.complete(self, _, callback)
-    local bufnr = vim.api.nvim_get_current_buf()
-    local items = {}
+  local bufnr = vim.api.nvim_get_current_buf()
+  local items = {}
 
-    if not self.cache[bufnr] then
-        items = get_vimwiki_para()
-        if type(items) ~= "table" then
-            return callback()
-        end
-        self.cache[bufnr] = items
-    else
-        items = self.cache[bufnr]
+  if not self.cache[bufnr] then
+    items = get_vimwiki_para()
+    if type(items) ~= "table" then
+      return callback()
     end
+    self.cache[bufnr] = items
+  else
+    items = self.cache[bufnr]
+  end
 
-    callback({items = items or {}, isIncomplete = false})
+  callback({ items = items or {}, isIncomplete = false })
 end
 
 function source.resolve(_, completion_item, callback)
-    callback(completion_item)
+  callback(completion_item)
 end
 
 function source.execute(_, completion_item, callback)
-    callback(completion_item)
+  callback(completion_item)
 end
 
 return source
