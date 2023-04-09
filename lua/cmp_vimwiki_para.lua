@@ -25,7 +25,8 @@ end
 
 function source.get_keyword_pattern()
    -- A pattern that accepts any characters inside the [[ ]]
-    return [[\[\[\k*]]
+  -- Include the characters . and -
+    return "[[a-zA-Z0-9.-]+"
 end
 
 -- This function reads names of all markdown files in the rootDir
