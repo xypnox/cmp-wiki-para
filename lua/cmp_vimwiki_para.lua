@@ -27,7 +27,7 @@ function source.get_keyword_pattern()
   -- A pattern that accepts alphanumeric and '_', '-', '.' in any order 
   -- Ex: wiki-para or wiki_para or wiki.para or wiki-para wiki-para.1.3.3
   -- inside the [[
-  return [[\k\+]]
+  return [[\k\+\|\w\+]]
 end
 
 -- This function reads names of all markdown files in the rootDir
